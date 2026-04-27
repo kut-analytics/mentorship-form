@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>TIP and OCSEA Mentorship Evaluation</title>
+<style>
+:root {
+  --navy:   #0f1f3d;
+  --navy2:  #1a3260;
+  --teal:   #0e7c7b;
+  --teal-l: #e0f2f1;
+  --amber:  #c47a00;
+  --amb-l:  #fff8e1;
+  --red:    #c62828;
+  --red-l:  #ffebee;
+  --green:  #1b5e20;
+  --grn-l:  #e8f5e9;
+  --grey:   #f4f4f4;
+  --mgrey:  #e0e0e0;
+  --dgrey:  #666;
+  --text:   #1a1a2e;
+  --white:  #ffffff;
+  --shadow: 0 2px 10px rgba(15,31,61,0.10);
+  --r:      10px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#eef2f7;color:var(--text);min-height:100vh;}
+
+/* HEADER */
+.header{background:var(--navy);color:white;padding:14px 20px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.3);}
+.header-icon{background:var(--teal);border-radius:8px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.header h1{font-size:1rem;color:white;}
+
+/* PROGRESS */
+.progress-wrap{background:var(--navy2);padding:0 20px;}
+.progress-bar{display:flex;max-width:640px;margin:0 auto;}
+.prog-step{flex:1;padding:10px 4px;text-align:center;font-size:.72rem;color:rgba(255,255,255,.4);border-bottom:3px solid transparent;transition:all .2s;white-space:nowrap;}
+.prog-step.active{color:var(--amber);border-bottom-color:var(--amber);}
+.prog-step.done{color:rgba(255,255,255,.6);border-bottom-color:var(--teal);}
+
+/* LAYOUT */
+.container{max-width:640px;margin:0 auto;padding:20px 16px 48px;}
+.page{display:none;}
+.page.active{display:block;}
+
+/* PAGE 1 — CARD SELECTOR */
+.page-title{font-size:1.05rem;font-weight:700;color:var(--navy);margin-bottom:6px;}
+.page-sub{font-size:.83rem;color:var(--dgrey);margin-bottom:20px;}
+.form-cards{display:flex;flex-direction:column;gap:12px;}
+.form-card{background:white;border-radius:var(--r);border:2px solid var(--mgrey);padding:16px 18px;cursor:pointer;display:flex;align-items:center;gap:14px;box-shadow:var(--shadow);transition:all .2s;}
+.form-card:hover,.form-card.sel{border-color:var(--teal);box-shadow:0 0 0 3px rgba(14,124,123,.12);}
+.form-card.sel{background:var(--teal-l);}
+.card-icon{width:44px;height:44px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.ci-visit{background:#e8f5e9;} .ci-review{background:var(--amb-l);} .ci-mentee{background:#e3f2fd;}
+.card-text h3{font-size:.93rem;color:var(--navy);margin-bottom:3px;}
+.card-text p{font-size:.77rem;color:var(--dgrey);}
+
+/* FORM SECTIONS */
+.fsec{background:white;border-radius:var(--r);padding:18px 20px;margin-bottom:14px;box-shadow:var(--shadow);}
+.fsec-title{font-size:.8rem;font-weight:700;color:white;background:var(--teal);margin:-18px -20px 16px;padding:9px 20px;border-radius:var(--r) var(--r) 0 0;letter-spacing:.04em;}
+.fsec-title.navy{background:var(--navy);}
+.fsec-title.amber{background:var(--amber);}
+.fsec-title.green{background:var(--green);}
+
+/* GRID */
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.fg3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+.full{grid-column:1/-1;}
+
+/* FORM GROUP */
+.fgrp{display:flex;flex-direction:column;gap:5px;}
+.fgrp label{font-size:.77rem;font-weight:700;color:var(--navy);}
+.fgrp label .req{color:var(--red);margin-left:2px;}
+.fgrp label .hint{font-weight:400;color:var(--dgrey);font-size:.7rem;display:block;margin-top:1px;}
+
+input,select,textarea{font-family:inherit;font-size:.87rem;padding:9px 12px;border:1.5px solid var(--mgrey);border-radius:7px;background:var(--grey);color:var(--text);width:100%;transition:border-color .2s;-webkit-appearance:none;appearance:none;}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 3px rgba(14,124,123,.1);background:white;}
+textarea{min-height:72px;resize:vertical;}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23666' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:34px;}
+
+/* SCORE BUTTONS */
+.score-item{background:var(--grey);border-radius:8px;padding:10px 12px;margin-bottom:10px;}
+.score-label{font-size:.79rem;color:var(--navy);margin-bottom:7px;line-height:1.4;}
+.score-label strong{display:block;font-size:.81rem;}
+.score-label span{font-size:.71rem;color:var(--dgrey);font-style:italic;}
+.score-btns{display:flex;gap:6px;flex-wrap:wrap;}
+.sbtn{padding:6px 13px;border:1.5px solid var(--mgrey);border-radius:6px;background:white;font-size:.8rem;font-weight:700;cursor:pointer;transition:all .15s;font-family:inherit;}
+.sbtn:hover{border-color:var(--teal);}
+.s0.active{background:var(--red-l);border-color:var(--red);color:var(--red);}
+.s1.active{background:var(--amb-l);border-color:var(--amber);color:var(--amber);}
+.s2.active{background:var(--grn-l);border-color:var(--green);color:var(--green);}
+.sna.active{background:var(--mgrey);border-color:var(--dgrey);color:var(--dgrey);}
+
+/* LIVE SCORE */
+.live-score{background:var(--navy);color:white;border-radius:8px;padding:12px 16px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;}
+.ls-main .ls-num{font-size:1.7rem;font-weight:700;color:var(--amber);}
+.ls-main .ls-lbl{font-size:.74rem;color:rgba(255,255,255,.6);}
+.ls-secs{display:flex;gap:7px;flex-wrap:wrap;}
+.ls-sec{background:rgba(255,255,255,.1);border-radius:5px;padding:3px 8px;font-size:.7rem;text-align:center;}
+.ls-sec .sn{color:rgba(255,255,255,.55);display:block;}
+.ls-sec .sv{color:white;font-weight:700;}
+
+/* BASELINE TOGGLE */
+.base-toggle{background:var(--amb-l);border:2px solid var(--amber);border-radius:8px;padding:12px 14px;display:flex;align-items:flex-start;gap:10px;cursor:pointer;margin-bottom:14px;}
+.base-toggle input{width:18px;height:18px;accent-color:var(--amber);cursor:pointer;flex-shrink:0;margin-top:2px;}
+.base-toggle .bt-text label{font-size:.86rem;font-weight:700;color:#6d4c00;cursor:pointer;}
+.base-toggle .bt-text p{font-size:.73rem;color:#9d6a00;margin-top:2px;}
+
+/* CASE TYPE */
+.ct-group{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;}
+.ct-btn{padding:7px 16px;border:1.5px solid var(--mgrey);border-radius:6px;background:white;font-size:.83rem;font-weight:700;cursor:pointer;transition:all .15s;font-family:inherit;color:var(--dgrey);}
+.ct-tip.on{background:#e3f2fd;border-color:#1565c0;color:#1565c0;}
+.ct-ocsea.on{background:var(--amb-l);border-color:var(--amber);color:var(--amber);}
+.ct-both.on{background:var(--teal-l);border-color:var(--teal);color:var(--teal);}
+
+/* BUTTONS */
+.btn-row{display:flex;gap:10px;margin-top:4px;}
+.btn{padding:12px 22px;border-radius:8px;border:none;font-family:inherit;font-size:.9rem;font-weight:700;cursor:pointer;transition:all .2s;flex:1;}
+.btn-primary{background:var(--teal);color:white;}
+.btn-primary:hover{background:#14a89e;}
+.btn-primary:disabled{background:var(--mgrey);color:var(--dgrey);cursor:not-allowed;}
+.btn-back{background:var(--grey);color:var(--navy);border:1.5px solid var(--mgrey);flex:0 0 auto;padding:12px 18px;}
+.btn-back:hover{background:var(--mgrey);}
+.btn-submit{background:var(--navy);color:white;}
+.btn-submit:hover{background:var(--navy2);}
+
+/* RESULT */
+.result{border-radius:var(--r);padding:14px 18px;margin-bottom:14px;font-size:.86rem;display:none;}
+.result.ok{background:var(--grn-l);border:1.5px solid var(--green);color:var(--green);}
+.result.err{background:var(--red-l);border:1.5px solid var(--red);color:var(--red);}
+.result.show{display:block;}
+
+/* TOAST */
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(60px);background:var(--green);color:white;padding:11px 22px;border-radius:20px;font-weight:700;font-size:.88rem;box-shadow:0 4px 18px rgba(0,0,0,.25);z-index:999;transition:transform .3s;pointer-events:none;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+
+@media(max-width:480px){.fg,.fg3{grid-template-columns:1fr;}.full{grid-column:1;}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-icon">🛡️</div>
+  <h1>TIP and OCSEA Mentorship Evaluation</h1>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress-bar">
+    <div class="prog-step active" id="prog1">1 · Select form</div>
+    <div class="prog-step" id="prog2">2 · Fill details</div>
+    <div class="prog-step" id="prog3">3 · Done</div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- ═══════════════════ PAGE 1 ═══════════════════ -->
+  <div class="page active" id="p1">
+    <div class="page-title">What would you like to log?</div>
+    <div class="page-sub">Select the type of record you are submitting.</div>
+    <div class="form-cards">
+      <div class="form-card" id="c-visit" onclick="pick('visit')">
+        <div class="card-icon ci-visit">📅</div>
+        <div class="card-text"><h3>Log a Mentor Visit</h3><p>Date, station, mentor, OCS presence, officers and files counted.</p></div>
+      </div>
+      <div class="form-card" id="c-review" onclick="pick('review')">
+        <div class="card-icon ci-review">📁</div>
+        <div class="card-text"><h3>Log a File Review</h3><p>Score a case file using the 22-item checklist. Live score calculated.</p></div>
+      </div>
+      <div class="form-card" id="c-mentee" onclick="pick('mentee')">
+        <div class="card-icon ci-mentee">👤</div>
+        <div class="card-text"><h3>Register / Update a Mentee</h3><p>Add or update an officer's details in the register.</p></div>
+      </div>
+    </div>
+    <div class="btn-row" style="margin-top:20px;">
+      <button class="btn btn-primary" id="btn-next" onclick="go2()" disabled>Continue →</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════ PAGE 2 ═══════════════════ -->
+  <div class="page" id="p2">
+    <div class="result" id="result-box"></div>
+
+    <!-- ── VISIT FORM ── -->
+    <div id="f-visit" style="display:none">
+      <div class="fsec">
+        <div class="fsec-title">📅 MENTOR VISIT LOG</div>
+        <div class="fg">
+          <div class="fgrp"><label>Visit Date <span class="req">*</span></label><input type="date" id="v-date"></div>
+          <div class="fgrp"><label>Station <span class="req">*</span></label><select id="v-station"><option value="">— Select station —</option></select></div>
+          <div class="fgrp"><label>Mentor Name <span class="req">*</span></label><input type="text" id="v-mentor" placeholder="Full name"></div>
+          <div class="fgrp"><label>Organisation</label>
+            <select id="v-org">
+              <option>AHTCPU</option><option>MX4 Foundation</option><option>Joint (AHTCPU &amp; MX4)</option>
+            </select>
+          </div>
+          <div class="fgrp"><label>OCS Present?</label>
+            <select id="v-ocs"><option>Yes</option><option>No</option><option>Partially</option></select>
+          </div>
+          <div class="fgrp"><label># Officers Present</label><input type="number" id="v-officers" min="0" placeholder="Count"></div>
+          <div class="fgrp"><label># Files Reviewed</label><input type="number" id="v-files" min="0" placeholder="Count"></div>
+          <div class="fgrp full"><label>Notes</label><textarea id="v-notes" placeholder="Key observations, challenges, agreed actions…"></textarea></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── FILE REVIEW FORM ── -->
+    <div id="f-review" style="display:none">
+
+      <div class="fsec">
+        <div class="fsec-title navy">📁 FILE REVIEW — Case Details</div>
+        <div class="fg">
+          <div class="fgrp"><label>Date <span class="req">*</span></label><input type="date" id="r-date"></div>
+          <div class="fgrp"><label>Visit ID <span class="req">*</span><span class="hint">From Visit Log e.g. V-001</span></label><input type="text" id="r-visitid" placeholder="V-001"></div>
+          <div class="fgrp"><label>Station <span class="req">*</span></label><select id="r-station"><option value="">— Select station —</option></select></div>
+          <div class="fgrp"><label>Officer / Mentee <span class="req">*</span></label><select id="r-mentee"><option value="">— Select officer —</option></select></div>
+          <div class="fgrp"><label>OB / Case Reference</label><input type="text" id="r-ob" placeholder="OB number or case ref"></div>
+          <div class="fgrp"><label>Case Type <span class="req">*</span></label>
+            <div class="ct-group">
+              <button class="ct-btn ct-tip"  type="button" onclick="setCT('TIP')">TIP</button>
+              <button class="ct-btn ct-ocsea" type="button" onclick="setCT('OCSEA')">OCSEA</button>
+              <button class="ct-btn ct-both"  type="button" onclick="setCT('Both')">Both</button>
+            </div>
+            <input type="hidden" id="r-casetype">
+          </div>
+        </div>
+        <div class="base-toggle" onclick="flipBase()">
+          <input type="checkbox" id="r-baseline">
+          <div class="bt-text">
+            <label for="r-baseline">This is the BASELINE file — first file reviewed for this officer</label>
+            <p>Tick only for the very first case file reviewed with this officer. Sets their starting score.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live score -->
+      <div class="live-score">
+        <div class="ls-main">
+          <div class="ls-lbl">Total score</div>
+          <div class="ls-num"><span id="ls-total">0</span> / <span id="ls-max">0</span></div>
+          <div class="ls-lbl" id="ls-pct">–</div>
+        </div>
+        <div class="ls-secs" id="ls-secs"></div>
+      </div>
+
+      <!-- Section A -->
+      <div class="fsec"><div class="fsec-title navy">A · CLASSIFICATION  (max 6 pts)</div><div id="sc-A"></div></div>
+      <!-- Section B -->
+      <div class="fsec"><div class="fsec-title">B · VICTIM HANDLING  (max 10 pts)</div><div id="sc-B"></div></div>
+      <!-- Section C -->
+      <div class="fsec"><div class="fsec-title navy">C · EVIDENCE  (max 10 pts)</div><div id="sc-C"></div></div>
+      <!-- Section D -->
+      <div class="fsec"><div class="fsec-title">D · CHARGE &amp; LEGAL  (max 8 pts)</div><div id="sc-D"></div></div>
+      <!-- Section E -->
+      <div class="fsec"><div class="fsec-title navy">E · REFERRAL &amp; GUIDANCE  (max 4 pts)</div><div id="sc-E"></div></div>
+      <!-- Section F -->
+      <div class="fsec"><div class="fsec-title">F · OCS OVERSIGHT  (max 6 pts)</div><div id="sc-F"></div></div>
+
+      <!-- Feedback -->
+      <div class="fsec">
+        <div class="fsec-title amber">Feedback</div>
+        <div class="fg">
+          <div class="fgrp full"><label>Mentor Feedback<span class="hint">Mentor's written feedback to the officer on this file</span></label>
+            <textarea id="r-mfeedback" placeholder="What the mentor observed, commended, or recommended for improvement…"></textarea></div>
+          <div class="fgrp full"><label>Mentee Comments<span class="hint">Officer's own response or comments after reviewing together</span></label>
+            <textarea id="r-mcomments" placeholder="Officer's reflections, questions, or commitments after the review…"></textarea></div>
+          <div class="fgrp full"><label>General Mentor Notes</label>
+            <textarea id="r-notes" placeholder="Any other observations not captured above…"></textarea></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── MENTEE FORM ── -->
+    <div id="f-mentee" style="display:none">
+      <div class="fsec">
+        <div class="fsec-title green">👤 MENTEE REGISTER</div>
+        <div class="fg">
+          <div class="fgrp"><label>Full Name <span class="req">*</span></label><input type="text" id="m-name" placeholder="Full name"></div>
+          <div class="fgrp"><label>Service Number</label><input type="text" id="m-service" placeholder="NPS/00000"></div>
+          <div class="fgrp"><label>Station <span class="req">*</span></label><select id="m-station"><option value="">— Select —</option></select></div>
+          <div class="fgrp"><label>Gender</label>
+            <select id="m-gender"><option value="">— Select —</option><option>M</option><option>F</option></select></div>
+          <div class="fgrp"><label>Role / Desk</label>
+            <select id="m-role">
+              <option value="">— Select —</option>
+              <option>Report Office</option><option>Gender Desk</option>
+              <option>Child Protection</option><option>DCI / Investigations</option><option>Other</option>
+            </select>
+          </div>
+          <div class="fgrp"><label>Phone Number</label><input type="tel" id="m-phone" placeholder="07XXXXXXXX"></div>
+          <div class="fgrp"><label>Assigned Mentor</label><input type="text" id="m-mentor" placeholder="Mentor full name"></div>
+          <div class="fgrp"><label>Status</label>
+            <select id="m-status"><option>Active</option><option>Inactive</option><option>Transferred</option></select></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-back" onclick="goBack()">← Back</button>
+      <button class="btn btn-submit" onclick="submitForm()" id="btn-submit">Submit ✓</button>
+    </div>
+  </div>
+
+</div><!-- container -->
+
+<div class="toast" id="toast">✅ Submitted!</div>
+
+<script>
+// ─── DATA ──────────────────────────────────────────────────────────────────
+const STATIONS = [
+  "Buruburu","California","Dandora","Eastleigh North",
+  "Jogoo Road","Kamkunji","Kariobangi","Kayole",
+  "Kware","Mathare","Mowlem","Obama","Ruaraka","Soweto"
+];
+
+const OFFICERS = [
+  {id:"MNT-001",name:"Fatuma Galgalo Duba",      station:"Dandora"},
+  {id:"MNT-002",name:"Dominic Korir Neroyang",   station:"Jogoo Road"},
+  {id:"MNT-003",name:"Salma Omar Banin",          station:"Eastleigh North"},
+  {id:"MNT-004",name:"Apati Josephine",           station:"Jogoo Road"},
+  {id:"MNT-005",name:"Racheal Akinyi Kagunza",    station:"Mowlem"},
+  {id:"MNT-006",name:"Stacey Nyambura Wairimu",   station:"Mathare"},
+  {id:"MNT-007",name:"Dhahari Shaban Hassan",     station:"Mathare"},
+  {id:"MNT-008",name:"Lilian Muthoni",            station:"Kamkunji"},
+  {id:"MNT-009",name:"Alex Ben Otieno Ochieng",   station:"Mathare"},
+  {id:"MNT-010",name:"Caroline Mutheu",           station:"Kware"},
+  {id:"MNT-011",name:"Margaret Njoki",            station:"Eastleigh North"},
+  {id:"MNT-012",name:"Rahab Kimunya",             station:"Eastleigh North"},
+  {id:"MNT-013",name:"Vane Gasare Kibondori",     station:"Eastleigh North"},
+  {id:"MNT-014",name:"Peter Gakai",               station:"Kariobangi"},
+  {id:"MNT-015",name:"Sylviah Nkaraku",           station:"Kariobangi"},
+  {id:"MNT-016",name:"Wawiac Njei Salome",        station:"Obama"},
+  {id:"MNT-017",name:"Divinah Kerubo",            station:"Kayole"},
+  {id:"MNT-018",name:"Dennis Mwangangi",          station:"Kayole"},
+  {id:"MNT-019",name:"Winfred Mutheu",            station:"Kayole"},
+  {id:"MNT-020",name:"John Musyoka",              station:"Mowlem"},
+  {id:"MNT-021",name:"Lucy Wairimu Nduati",       station:"Soweto"},
+  {id:"MNT-022",name:"Ongoro Vincenciah",         station:"Kamkunji"},
+  {id:"MNT-023",name:"Caroline Wanjiru",          station:"Dandora"},
+  {id:"MNT-024",name:"Geoffrey Mwongera Munee",   station:"Buruburu"},
+  {id:"MNT-025",name:"Lucy Wambui Mwangi",        station:"Obama"},
+  {id:"MNT-026",name:"Wilberforce Wanalo",        station:"Dandora"},
+  {id:"MNT-027",name:"Evans Omollo",              station:"California"},
+  {id:"MNT-028",name:"Joan Atieno Awuor",         station:"Obama"},
+  {id:"MNT-029",name:"Michael Njengia",           station:"Kware"},
+  {id:"MNT-030",name:"Mary Nyokabi Waigi",        station:"Buruburu"},
+  {id:"MNT-031",name:"Mary Jemutai Cherotich",    station:"Ruaraka"},
+  {id:"MNT-032",name:"Moses Mturi Chivatsi",      station:"Ruaraka"},
+  {id:"MNT-033",name:"Carolyne Wanjiku Kamau",    station:"California"},
+  {id:"MNT-034",name:"Miriam Nyakinyua Kariuki",  station:"California"},
+  {id:"MNT-035",name:"Mildred Nyaali Ekirapa",    station:"Buruburu"},
+];
+
+const CHECKLIST = [
+  {sec:"A",id:"A1",title:"OB Entry",note:"OB entry present, dated, signed, assigned to named IO."},
+  {sec:"A",id:"A2",title:"Correct Classification",note:"Not misfiled as defilement/missing child where TIP/OCSEA elements exist. Check 6 trigger indicators."},
+  {sec:"A",id:"A3",title:"Legal Elements Documented",note:"TIP: Act+Means+Purpose. OCSEA: specific form (CSAM, grooming, sextortion, etc.)."},
+  {sec:"B",id:"B1",title:"Age & Vulnerability",note:"Proof of age present. Vulnerability factors noted."},
+  {sec:"B",id:"B2",title:"Victim Not Criminalised",note:"No charge/caution against victim for offences arising from exploitation."},
+  {sec:"B",id:"B3",title:"Interview Quality",note:"Private space, child-friendly, PEACE model/structured approach, not re-interviewed."},
+  {sec:"B",id:"B4",title:"Signed Statement",note:"Statement signed/thumb-printed by victim, counter-signed by IO. Guardian noted if child."},
+  {sec:"B",id:"B5",title:"Immediate Victim Referral ★",note:"At first contact: shelter, medical, psychosocial, Children's Dept, or legal aid documented."},
+  {sec:"C",id:"C1",title:"Exhibit Register",note:"All evidence listed with numbers, descriptions, chain of custody entries."},
+  {sec:"C",id:"C2",title:"P3 Form",note:"P3 from government medical officer included. If absent, reason documented. N/A if no physical harm."},
+  {sec:"C",id:"C3",title:"Digital Device Secured",note:"Device identified, seizure documented, NOT accessed before forensic extraction. N/A if no digital element."},
+  {sec:"C",id:"C4",title:"Forensic Referral",note:"Referral to AHTCPU/DCI for forensics OR screenshots/platform IDs captured. N/A if no digital element."},
+  {sec:"C",id:"C5",title:"Chain of Custody ★",note:"Continuous documented trail — who had the exhibit at each stage, when, how stored."},
+  {sec:"D",id:"D1",title:"Correct Act(s) Cited",note:"CTIP Act 2010, Children Act 2022, SOA 2006, CMCA 2018 — may combine. Not a lesser charge."},
+  {sec:"D",id:"D2",title:"All Elements on Charge Sheet",note:"TIP: Act+Means+Purpose stated. OCSEA: specific provision and conduct. Not vague."},
+  {sec:"D",id:"D3",title:"Forwarded to ODPP/DCI",note:"Referral to ODPP for charging advice, DCI for specialist investigation, or suspect arraigned."},
+  {sec:"D",id:"D4",title:"OCS Sign-Off",note:"OCS or OC Crimes signature/annotation visible on file or charge sheet."},
+  {sec:"E",id:"E1",title:"Case Escalated",note:"Where complexity required it — AHTCPU, DCI TOCU/SCU, ODPP brought in."},
+  {sec:"E",id:"E2",title:"Guidance Sought When Unsure",note:"Evidence of consultation rather than proceeding alone or doing nothing."},
+  {sec:"F",id:"F1",title:"OCS Aware & Tracking",note:"OCS can name active cases and their stage. Case tracking visible."},
+  {sec:"F",id:"F2",title:"OCS Reviewed & Enabled",note:"OCS signature on files. Officers given time to participate in mentorship."},
+  {sec:"F",id:"F3",title:"OCS Action Taken ★",note:"Directed IO, escalated to DCI/ODPP, facilitated referral, followed up pending cases."},
+];
+
+const SEC_MAX = {A:6,B:10,C:10,D:8,E:4,F:6};
+let sel = null, ct = null;
+const scores = {};
+CHECKLIST.forEach(i => scores[i.id] = null);
+
+// ─── INIT ──────────────────────────────────────────────────────────────────
+function init() {
+  // Populate station dropdowns
+  ['v-station','r-station','m-station'].forEach(id => {
+    const s = document.getElementById(id);
+    STATIONS.forEach(st => { const o=document.createElement('option'); o.value=o.textContent=st; s.appendChild(o); });
+  });
+  // Officer dropdown
+  const om = document.getElementById('r-mentee');
+  OFFICERS.forEach(o => {
+    const opt=document.createElement('option');
+    opt.value=o.id;
+    opt.textContent=`${o.id} — ${o.name} (${o.station})`;
+    om.appendChild(opt);
+  });
+  // When station changes in file review, filter officers
+  document.getElementById('r-station').addEventListener('change', function(){
+    const sta = this.value;
+    const om = document.getElementById('r-mentee');
+    Array.from(om.options).forEach(opt => {
+      if (!opt.value) return;
+      const officer = OFFICERS.find(o => o.id === opt.value);
+      opt.style.display = (!sta || officer?.station === sta) ? '' : 'none';
+    });
+    om.value = '';
+  });
+  // Build score grids
+  CHECKLIST.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'score-item';
+    div.id = 'si-'+item.id;
+    div.innerHTML = `
+      <div class="score-label">
+        <strong>${item.id} — ${item.title}</strong>
+        <span>${item.note}</span>
+      </div>
+      <div class="score-btns">
+        <button class="sbtn s0" type="button" onclick="setScore('${item.id}',0)">0 — Absent</button>
+        <button class="sbtn s1" type="button" onclick="setScore('${item.id}',1)">1 — Partial</button>
+        <button class="sbtn s2" type="button" onclick="setScore('${item.id}',2)">2 — Met</button>
+        <button class="sbtn sna" type="button" onclick="setScore('${item.id}','na')">N/A</button>
+      </div>`;
+    document.getElementById('sc-'+item.sec).appendChild(div);
+  });
+  // Dates
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('v-date').value = today;
+  document.getElementById('r-date').value = today;
+  updateLive();
+}
+
+// ─── NAVIGATION ────────────────────────────────────────────────────────────
+function pick(type) {
+  sel = type;
+  ['visit','review','mentee'].forEach(t => document.getElementById('c-'+t).classList.remove('sel'));
+  document.getElementById('c-'+type).classList.add('sel');
+  document.getElementById('btn-next').disabled = false;
+}
+
+function go2() {
+  if (!sel) return;
+  document.getElementById('p1').classList.remove('active');
+  document.getElementById('p2').classList.add('active');
+  ['f-visit','f-review','f-mentee'].forEach(id => document.getElementById(id).style.display='none');
+  document.getElementById('f-'+sel).style.display = 'block';
+  document.getElementById('prog1').className = 'prog-step done';
+  document.getElementById('prog2').className = 'prog-step active';
+  window.scrollTo(0,0);
+}
+
+function goBack() {
+  document.getElementById('p2').classList.remove('active');
+  document.getElementById('p1').classList.add('active');
+  document.getElementById('prog1').className = 'prog-step active';
+  document.getElementById('prog2').className = 'prog-step';
+  document.getElementById('result-box').className = 'result';
+  window.scrollTo(0,0);
+}
+
+// ─── CASE TYPE ─────────────────────────────────────────────────────────────
+function setCT(t) {
+  ct = t;
+  document.getElementById('r-casetype').value = t;
+  document.querySelector('.ct-tip').classList.toggle('on', t==='TIP');
+  document.querySelector('.ct-ocsea').classList.toggle('on', t==='OCSEA');
+  document.querySelector('.ct-both').classList.toggle('on', t==='Both');
+}
+
+// ─── SCORING ───────────────────────────────────────────────────────────────
+function setScore(id, val) {
+  scores[id] = val;
+  const si = document.getElementById('si-'+id);
+  si.querySelectorAll('.sbtn').forEach(b => b.classList.remove('active'));
+  const cls = val==='na'?'sna':`s${val}`;
+  si.querySelector('.'+cls).classList.add('active');
+  updateLive();
+}
+
+function flipBase() {
+  const cb = document.getElementById('r-baseline');
+  cb.checked = !cb.checked;
+}
+
+function updateLive() {
+  let total=0, maxApp=0;
+  const st={};
+  Object.keys(SEC_MAX).forEach(s=>{st[s]=0;});
+  CHECKLIST.forEach(item=>{
+    const v=scores[item.id];
+    if(v!==null&&v!=='na'){total+=Number(v);maxApp+=2;st[item.sec]+=Number(v);}
+  });
+  document.getElementById('ls-total').textContent=total;
+  document.getElementById('ls-max').textContent=maxApp;
+  const pct=maxApp>0?Math.round(total/maxApp*100):null;
+  document.getElementById('ls-pct').textContent=pct!==null?`${pct}%  ${pct>=70?'✅ Satisfactory':'⚠️ Below threshold'}`:'Score items to see %';
+  const secs=document.getElementById('ls-secs');
+  secs.innerHTML='';
+  Object.keys(SEC_MAX).forEach(s=>{
+    const d=document.createElement('div');
+    d.className='ls-sec';
+    d.innerHTML=`<span class="sn">${s}</span><span class="sv">${st[s]}</span>`;
+    secs.appendChild(d);
+  });
+}
+
+// ─── PAYLOAD BUILDERS ──────────────────────────────────────────────────────
+const PA_URL = "https://prod-XX.westeurope.logic.azure.com/workflows/REPLACE_WITH_YOUR_URL";
+
+function buildVisit(){
+  return {
+    form_type:"visit",
+    visit_id:"V-"+String(Date.now()).slice(-5),
+    date:document.getElementById('v-date').value,
+    station:document.getElementById('v-station').value,
+    mentor_name:document.getElementById('v-mentor').value,
+    mentor_org:document.getElementById('v-org').value,
+    ocs_present:document.getElementById('v-ocs').value,
+    officers_present:document.getElementById('v-officers').value,
+    files_reviewed:document.getElementById('v-files').value,
+    notes:document.getElementById('v-notes').value,
+    submitted_at:new Date().toISOString(),
+  };
+}
+
+function buildReview(){
+  const mEl=document.getElementById('r-mentee');
+  let total=0,maxApp=0;
+  const st={A:0,B:0,C:0,D:0,E:0,F:0};
+  const items={};
+  CHECKLIST.forEach(item=>{
+    const v=scores[item.id];
+    items[item.id]=v===null?'':v;
+    if(v!==null&&v!=='na'){st[item.sec]+=Number(v);total+=Number(v);maxApp+=2;}
+  });
+  return {
+    form_type:"file_review",
+    review_id:"FR-"+String(Date.now()).slice(-5),
+    visit_id:document.getElementById('r-visitid').value,
+    date:document.getElementById('r-date').value,
+    station:document.getElementById('r-station').value,
+    mentee_id:mEl.value,
+    officer_name:mEl.options[mEl.selectedIndex]?.text||'',
+    ob_case_ref:document.getElementById('r-ob').value,
+    case_type:document.getElementById('r-casetype').value,
+    is_baseline:document.getElementById('r-baseline').checked?'Yes':'No',
+    ...items,
+    sec_A:st.A,sec_B:st.B,sec_C:st.C,sec_D:st.D,sec_E:st.E,sec_F:st.F,
+    total_score:total,
+    max_applicable:maxApp,
+    score_pct:maxApp>0?Math.round(total/maxApp*100):0,
+    mentor_notes:document.getElementById('r-notes').value,
+    mentor_feedback:document.getElementById('r-mfeedback').value,
+    mentee_comments:document.getElementById('r-mcomments').value,
+    submitted_at:new Date().toISOString(),
+  };
+}
+
+function buildMentee(){
+  return {
+    form_type:"mentee",
+    name:document.getElementById('m-name').value,
+    service_no:document.getElementById('m-service').value,
+    station:document.getElementById('m-station').value,
+    gender:document.getElementById('m-gender').value,
+    role:document.getElementById('m-role').value,
+    phone:document.getElementById('m-phone').value,
+    mentor:document.getElementById('m-mentor').value,
+    status:document.getElementById('m-status').value,
+    submitted_at:new Date().toISOString(),
+  };
+}
+
+function validate(){
+  if(sel==='visit'){
+    if(!document.getElementById('v-date').value) return "Please enter the visit date.";
+    if(!document.getElementById('v-station').value) return "Please select a station.";
+    if(!document.getElementById('v-mentor').value) return "Please enter the mentor's name.";
+  }
+  if(sel==='review'){
+    if(!document.getElementById('r-date').value) return "Please enter the review date.";
+    if(!document.getElementById('r-visitid').value) return "Please enter the Visit ID.";
+    if(!document.getElementById('r-station').value) return "Please select a station.";
+    if(!document.getElementById('r-mentee').value) return "Please select an officer.";
+    if(!document.getElementById('r-casetype').value) return "Please select the case type.";
+    if(Object.values(scores).every(v=>v===null)) return "Please score at least one checklist item.";
+  }
+  if(sel==='mentee'){
+    if(!document.getElementById('m-name').value) return "Please enter the officer's name.";
+    if(!document.getElementById('m-station').value) return "Please select a station.";
+  }
+  return null;
+}
+
+function showResult(type,msg){
+  const b=document.getElementById('result-box');
+  b.className='result '+type+' show';
+  b.innerHTML=msg;
+  b.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3500);
+}
+
+async function submitForm(){
+  const err=validate();
+  if(err){showResult('err','⚠️ '+err);return;}
+  let payload;
+  if(sel==='visit') payload=buildVisit();
+  if(sel==='review') payload=buildReview();
+  if(sel==='mentee') payload=buildMentee();
+  const btn=document.getElementById('btn-submit');
+  btn.disabled=true; btn.textContent='Submitting…';
+  try {
+    const res=await fetch(PA_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    if(res.ok||res.status===202){
+      showResult('ok','✅ <strong>Submitted successfully!</strong> Record sent to tracker.');
+      toast('✅ Submitted!');
+      document.getElementById('prog2').className='prog-step done';
+      document.getElementById('prog3').className='prog-step active';
+      btn.textContent='✓ Submitted';
+    } else { throw new Error('Status '+res.status); }
+  } catch(e) {
+    console.log('Payload (PA URL not configured):', payload);
+    showResult('err','⚠️ <strong>Could not reach server.</strong> Replace PA_URL in code with your Power Automate HTTP trigger URL. Payload logged to console (F12).');
+    btn.disabled=false; btn.textContent='Submit ✓';
+  }
+}
+
+init();
+</script>
+</body>
+</html>
