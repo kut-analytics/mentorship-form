@@ -508,7 +508,7 @@ function updateLive() {
 }
 
 // ─── PAYLOAD BUILDERS ──────────────────────────────────────────────────────
-const PA_URL = "const PA_URL = "https://default4f484195c45d4307a579d353499069.b7.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/6be1c96232954ec9a023f05083ec19b2/triggers/manual/paths/invoke?api-version=1";";
+const PA_URL = "https://default4f484195c45d4307a579d353499069.b7.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/6be1c96232954ec9a023f05083ec19b2/triggers/manual/paths/invoke?api-version=1";
 
 function buildVisit(){
   return {
@@ -618,18 +618,25 @@ async function submitForm(){
   if(sel==='mentee') payload=buildMentee();
   const btn=document.getElementById('btn-submit');
   btn.disabled=true; btn.textContent='Submitting…';
+  console.log('Submitting payload:', JSON.stringify(payload, null, 2));
   try {
-    const res=await fetch(PA_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
-    if(res.ok||res.status===202){
-      showResult('ok','✅ <strong>Submitted successfully!</strong> Record sent to tracker.');
-      toast('✅ Submitted!');
-      document.getElementById('prog2').className='prog-step done';
-      document.getElementById('prog3').className='prog-step active';
-      btn.textContent='✓ Submitted';
-    } else { throw new Error('Status '+res.status); }
+    // Use no-cors mode — Power Automate direct endpoints block CORS headers
+    // The request still goes through; we just cannot read the response
+    await fetch(PA_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(payload),
+    });
+    // With no-cors we always land here if the network request was made
+    showResult('ok','✅ <strong>Submitted!</strong> Your record has been sent. Check the Excel tracker in a few seconds to confirm it arrived.');
+    toast('✅ Submitted!');
+    document.getElementById('prog2').className='prog-step done';
+    document.getElementById('prog3').className='prog-step active';
+    btn.textContent='✓ Submitted';
   } catch(e) {
-    console.log('Payload (PA URL not configured):', payload);
-    showResult('err','⚠️ <strong>Could not reach server.</strong> Replace PA_URL in code with your Power Automate HTTP trigger URL. Payload logged to console (F12).');
+    console.error('Submission error:', e);
+    showResult('err','⚠️ <strong>Network error.</strong> Check your internet connection and try again. Error: '+e.message);
     btn.disabled=false; btn.textContent='Submit ✓';
   }
 }
